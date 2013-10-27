@@ -68,6 +68,118 @@
   <script>
     $(document).ready(function() {
       // ここにコードを記載していきます。オリジナル版でのtodos.jsに相当します。
+      
+      var Todo = Backbone.Model.extend({
+        defaults : {
+          title : 'empty todo',
+          done : false
+        }
+      });
+
+
+
+      var TodoList = Backbone.Collection.extend({
+        model : Todo,
+        doneTodos : function(){
+          return this.where({ done : true })
+        },
+        remainingTodos : function(){
+          return this.where({ done : false });
+        }
+      });
+
+
+
+      var TodoView = Backbone.View.extend({
+        tagName : 'li',
+        events : {
+          'click .toggle' : function(e) { this.model.set('done', this.$done.checked); },
+          'click a.destroy' : function() { this.model.destroy(); },
+          'dblclick .view' : function() {
+            this.$el.addClass('editing');
+            this.$input.focus();
+          },
+          'keypress .edit' : function(e) { if(e.keyCode === 13) this.close() },
+          'blur .edit' : 'close'
+        },
+        initialize : function(title) {
+          this.model.on('change', this.render, this);
+          this.model.on('destroy', this.remove, this);
+          this.render();
+        },
+        render : function() {
+          var todoHtml = _.template($('#item-template').html(), {
+            title : this.model.get('title'),
+            done : this.model.get('done')
+          });
+
+          this.$el.html(todoHtml);
+          this.$el.toggleClass('done', this.model.get('done'));
+          this.$done = this.$('.toggle')[0];
+          this.$input = this.$('.edit');
+        },
+        close : function() {
+          var value = this.$input.val();
+          this.model.set('title', value);
+          this.$el.removeClass('editing');
+        }
+      });
+
+
+
+
+      var AppView = Backbone.View.extend({
+        statsTemplate : _.template($('#stats-template').html()),
+        events : {
+          'keypress #new-todo' : function(e) {
+            if(e.keyCode !== 13) return;
+            if(this.$input.val() === '') return;
+
+            this.collection.add({ title : this.$input.val() });
+            this.$input.val('');
+          },
+          'click #clear-completed' : function() {
+            _.each(this.collection.doneTodos(), function(todo){ todo.destroy() });
+          },
+          'click #toggle-all' : function() {
+            var allDone = this.allDoneCheckbox.checked;
+            this.collection.each(function(todo){ todo.set('done', allDone); });
+          }
+        },
+        initialize : function() {
+          this.allDoneCheckbox = this.$('#toggle-all')[0];
+          this.$input = this.$('#new-todo');
+          this.$main = this.$('#main');
+          this.$footer = this.$('footer');
+          this.collection.on('add', this.addOne, this);
+          this.collection.on('all', this.render, this);
+        },
+        addOne : function(todo) {
+          var todoView = new TodoView({ model : todo });
+          this.$('#todo-list').append(todoView.el);
+        },
+        render : function(todo) {
+          var done = this.collection.doneTodos().length;
+          var remaining = this.collection.remainingTodos().length;
+
+          if(this.collection.length) {
+            this.$main.show();
+            this.$footer.show();
+            this.$footer.html(this.statsTemplate({ done : done, remaining : remaining }));
+          } else {
+            this.$main.hide();
+            this.$footer.hide();
+          }
+
+          this.allDoneCheckbox.checked = !remaining;
+        }
+      });
+      
+      var app = new AppView({
+        el : '#todoapp',
+        collection : new TodoList()
+      });
+      
     });
   </script>
 
