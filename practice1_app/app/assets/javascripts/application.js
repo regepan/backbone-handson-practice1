@@ -14,3 +14,8 @@
 //= require_tree .
 
 templates = {}
+
+window.App = {
+  Models: {},
+  Views: {}
+}
