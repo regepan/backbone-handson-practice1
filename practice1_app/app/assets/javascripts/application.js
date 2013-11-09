@@ -11,11 +11,11 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require_self
-//= require_tree .
 
 templates = {}
 
 window.App = {
   Models: {},
-  Views: {}
+  Views: {},
+  Collections: {}
 }
