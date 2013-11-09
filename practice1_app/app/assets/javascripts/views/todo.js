@@ -2,7 +2,10 @@ App.Views.TodoView = Backbone.View.extend({
   tagName : 'li',
   events : {
     'click .toggle' : function(e) { this.model.set('done', this.$done.checked); },
-    'click a.destroy' : function() { this.model.destroy(); },
+    'click a.destroy' : function() {
+      if (confirm('「' + this.$input.val() + '」' + '\nを本当に削除しますか？'))
+        this.model.destroy();
+   },
     'dblclick .view' : function() {
       this.$el.addClass('editing');
       this.$input.focus();

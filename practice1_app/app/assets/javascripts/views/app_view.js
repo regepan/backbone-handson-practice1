@@ -11,9 +11,11 @@ App.Views.AppView = Backbone.View.extend({
       this.$input.val('');
     },
     'click #clear-completed': function() {
-      _.each(this.collection.doneTodos(), function(todo) {
-        todo.destroy()
-      });
+      if (confirm(this.collection.doneTodos().length + '件のアイテムを削除しますか？')) {
+        _.each(this.collection.doneTodos(), function(todo) {
+          todo.destroy();
+        });
+      }
     },
     'click #toggle-all': function() {
       var allDone = this.allDoneCheckbox.checked;
