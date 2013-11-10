@@ -11,6 +11,11 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require_self
+//= require_directory ./templates
+//= require_directory ./models
+//= require_directory ./collections
+//= require_directory ./views
+//= require_tree .
 
 templates = {}
 
