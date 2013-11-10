@@ -7,8 +7,19 @@ App.Views.TodoView = Backbone.View.extend({
         this.model.destroy();
    },
     'dblclick .view' : function() {
-      this.$el.addClass('editing');
-      this.$input.focus();
+      var _this = this;
+      var $content = $('<div class="edit-wrap"></div>');
+      $content.append(this.$el.children('.edit'));
+      
+      $.boxer($content, {
+        callback : function(){
+          _this.$input.focus();
+        },
+        close : function(){
+          _this.close();
+          _this.render();
+        }
+      });
     },
     'keypress .edit' : function(e) { if(e.keyCode === 13) this.close() },
     'blur .edit' : 'close'
@@ -32,7 +43,6 @@ App.Views.TodoView = Backbone.View.extend({
   close : function() {
     var value = this.$input.val();
     this.model.set('title', value);
-    this.$el.removeClass('editing');
   }
 });
 

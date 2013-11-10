@@ -37,7 +37,8 @@ body {
 	padding: 0 0 10px 0;
 }
 
-#todoapp input[type="text"] {
+#todoapp input[type="text"],
+#boxer .edit-wrap input[type="text"] {
 	width: 466px;
 	font-size: 24px;
 	font-family: inherit;
@@ -208,4 +209,8 @@ body {
 
 #credits a {
 	color: #888;
+}
+
+#boxer .edit-wrap {
+  width: 480px;
 }
