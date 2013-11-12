@@ -5,34 +5,39 @@ App.Views.TodoView = Backbone.View.extend({
     'click a.destroy' : function() {
       if (confirm('「' + this.$input.val() + '」' + '\nを本当に削除しますか？'))
         this.model.destroy();
-   },
+    },
     'dblclick .view' : function() {
       var _this = this;
+      var $input = this.$el.children('.edit');
       var $content = $('<div class="edit-wrap"></div>');
-      $content.append(this.$el.children('.edit'));
-      
+      var $mapWrap = $('<div id="map-wrap"></div>');
+
+      $content.append($input, $mapWrap);
+
+      // overlay
       $.boxer($content, {
         callback : function(){
           _this.$input.focus();
+          _this.mapView.addMap($input, $mapWrap);
         },
         close : function(){
           _this.close();
           _this.render();
         }
       });
-    },
-    'keypress .edit' : function(e) { if(e.keyCode === 13) this.close() },
-    'blur .edit' : 'close'
+    }
   },
   initialize : function(title) {
-    this.model.on('change', this.render, this);
+    this.mapView = new App.Views.MapView();
+    
     this.model.on('destroy', this.remove, this);
     this.render();
   },
   render : function() {
     var todoHtml = templates['item']({
       title : this.model.get('title'),
-      done : this.model.get('done')
+      done : this.model.get('done'),
+      latLng : this.model.get('latLng')
     });
 
     this.$el.html(todoHtml);
@@ -43,6 +48,7 @@ App.Views.TodoView = Backbone.View.extend({
   close : function() {
     var value = this.$input.val();
     this.model.set('title', value);
+    
+    this.model.set('latLng', this.$input.attr('data-lat-lng'));
   }
 });
-

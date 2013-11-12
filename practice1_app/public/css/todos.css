@@ -214,3 +214,10 @@ body {
 #boxer .edit-wrap {
   width: 480px;
 }
+
+#map-wrap {
+  width:480px;
+  height:400px;
+  margin:20px 0 0 0;
+}
+
