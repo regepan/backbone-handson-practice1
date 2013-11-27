@@ -6,32 +6,7 @@ App.Views.TodoView = Backbone.View.extend({
       if (confirm('「' + this.$input.val() + '」' + '\nを本当に削除しますか？'))
         this.model.destroy();
     },
-    'dblclick .view' : function() {
-      var _this = this;
-      var $input = this.$el.children('.edit');
-      var $content = $('<div class="edit-wrap"></div>');
-      var $mapWrap = $('<div id="map-wrap"></div>');
-
-      $content.append($input, $mapWrap);
-
-      // overlay
-      $.boxer($content, {
-        callback : function(){
-          _this.$input
-            .keypress(function(e){
-              // enter key
-              if(e.keyCode === 13) $.fn.boxer('destroy');
-            })
-            .focus();
-          
-          _this.mapView.addMap($input, $mapWrap);
-        },
-        close : function(){
-          _this.close();
-          _this.render();
-        }
-      });
-    }
+    'dblclick .view' : 'showOverlay'
   },
   initialize : function(title) {
     this.mapView = new App.Views.MapView();
@@ -56,5 +31,31 @@ App.Views.TodoView = Backbone.View.extend({
     this.model.set('title', value);
     
     this.model.set('latLng', this.$input.attr('data-lat-lng'));
+  },
+  showOverlay : function() {
+    var _this = this;
+    var $input = this.$el.children('.edit');
+    var $content = $('<div class="edit-wrap"></div>');
+    var $mapWrap = $('<div id="map-wrap"></div>');
+
+    $content.append($input, $mapWrap);
+
+    // overlay
+    $.boxer($content, {
+      callback : function(){
+        _this.$input
+          .keypress(function(e){
+            // enter key
+            if(e.keyCode === 13) $.fn.boxer('destroy');
+          })
+          .focus();
+
+        _this.mapView.addMap($input, $mapWrap);
+      },
+      close : function(){
+        _this.close();
+        _this.render();
+      }
+    });
   }
 });
