@@ -17,7 +17,13 @@ App.Views.TodoView = Backbone.View.extend({
       // overlay
       $.boxer($content, {
         callback : function(){
-          _this.$input.focus();
+          _this.$input
+            .keypress(function(e){
+              // enter key
+              if(e.keyCode === 13) $.fn.boxer('destroy');
+            })
+            .focus();
+          
           _this.mapView.addMap($input, $mapWrap);
         },
         close : function(){
