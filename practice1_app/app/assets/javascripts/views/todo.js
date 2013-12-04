@@ -11,6 +11,7 @@ App.Views.TodoView = Backbone.View.extend({
   initialize : function(title) {
     this.mapView = new App.Views.MapView();
     
+    this.model.on('change', this.render, this);
     this.model.on('destroy', this.remove, this);
     this.render();
   },
@@ -28,9 +29,10 @@ App.Views.TodoView = Backbone.View.extend({
   },
   close : function() {
     var value = this.$input.val();
-    this.model.set('title', value);
+    this.model.set('title', value, {silent: true});
+    this.model.set('latLng', this.$input.attr('data-lat-lng'), {silent: true});
     
-    this.model.set('latLng', this.$input.attr('data-lat-lng'));
+    this.model.change();
   },
   showOverlay : function() {
     var _this = this;
