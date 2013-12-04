@@ -1,3 +1,4 @@
+###
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
@@ -16,11 +17,11 @@
 //= require_directory ./collections
 //= require_directory ./views
 //= require_tree .
+###
 
-templates = {}
+window.templates = {}
 
-window.App = {
-  Models: {},
-  Views: {},
+window.App =
+  Models: {}
+  Views: {}
   Collections: {}
-}
